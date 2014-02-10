@@ -4,6 +4,7 @@ class GamesController < ApplicationController
   end
 
   def edit
-    
+    @request = params[:id]
   end
+
 end

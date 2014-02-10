@@ -1,1 +1,7 @@
 <%= render 'games/users_table' %>
+
+<ul id="chat">
+  <%= @request %>
+</ul>
+
+<%= subscribe_to "/request/new" %>
