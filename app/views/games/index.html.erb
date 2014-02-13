@@ -1,7 +1,3 @@
 <%= render 'games/users_table' %>
+<%= csrf_meta_tag %>
 
-<ul id="chat">
-  <%= @request %>
-</ul>
-
-<%= subscribe_to "/request/new" %>

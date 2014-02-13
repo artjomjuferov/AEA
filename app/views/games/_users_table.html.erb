@@ -2,8 +2,8 @@ PLayers
 <% @users.each do |user| %>
   <div>
     <%= user.email %>
-    <% #if user_signed_in? and user.email == current_user.email %>
-      <%= link_to "Request a game", edit_game_path(12), :remote => true  %> 
-    <% #end %>
-  <div>
+    <% if user_signed_in? and user.email != current_user.email %>
+      <%= link_to "Request a game", edit_game_path( user.id.to_s), :remote => true, :stage => "req", :class => "linkRequest" %> 
+    <% end %>
+  </div>
 <% end %>
