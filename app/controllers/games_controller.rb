@@ -9,7 +9,7 @@ class GamesController < ApplicationController
     @id = params[:id]
     @stage = params[:stage]
     if @stage = "req"
-      p @stage
+      p params[:anwser]
       PrivatePub.publish_to "/request/#{@id}",:id => current_user.id, :stage => @stage
       PrivatePub.publish_to "/request/#{current_user.id}",:id => @id, :stage => 'sent'
     elsif @stage = "answ"
