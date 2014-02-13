@@ -7,14 +7,22 @@ class GamesController < ApplicationController
 
   def edit
     @id = params[:id]
+    @my_id = current_user.id
     @stage = params[:stage]
-    if @stage = "req"
+    @answer = params[:anwser]
+    if !Game.exist_game()?
+      PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'exist'
+    elsif 
+      PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'buzy'
+    elsif @stage = "req"
       p params[:anwser]
-      PrivatePub.publish_to "/request/#{@id}",:id => current_user.id, :stage => @stage
-      PrivatePub.publish_to "/request/#{current_user.id}",:id => @id, :stage => 'sent'
+      @game = Game.new(@my_id, @id);
+      PrivatePub.publish_to "/request/#{@id}",:id => @my_id, :stage => @stage
+      PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'sent'
     elsif @stage = "answ"
-      @answer = params[:anwser]
-      PrivatePub.publish_to "/request/#{@id}", :id => current_user.id, :stage => @stage
+      if @answer == 'yes'
+        Game.
+        PrivatePub.publish_to "/request/#{@id}", :id => @my_id, :stage => @stage
     end
   end
 
