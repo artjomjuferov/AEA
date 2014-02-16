@@ -2,10 +2,16 @@ if (window.currentUser)
 {
   PrivatePub.subscribe("/request/"+window.currentUser.id, function(data, channel) {
     // main = $("#gamesRequest");
-    // if (data.stage == "exist"){
-    //   main = $("#userInTable"+data.id);
-    //   obj = main.append('<div id="exist">Game or Requesst already exist</div>');
-    // }
+    if (data.stage == "exist"){
+      obj = $("#userInTable"+data.id);
+      obj.find(".userStatus").empty();
+      obj.append('Game or Requesst already exist');
+      
+    } else if (data.stage == "buzy"){
+      obj = $("#userInTable"+data.id);
+      obj.find(".userstatus").empty();
+      obj.append('Sorry he is in game');
+    }
     /*
     if (data.stage == "req"){
       main.append('<div id="game'+data.id+'"></div>');

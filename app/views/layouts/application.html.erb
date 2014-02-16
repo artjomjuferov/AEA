@@ -4,7 +4,8 @@
   <title>AEA</title>
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <% if user_signed_in? %>
-    
+  
+  <%= render 'layouts/user_id' %>
   <% end %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
@@ -16,7 +17,7 @@
   <%= render 'layouts/user_widget' %>
   <br>
   <%= yield %>
+  <%= render 'layouts/user_subscribe' %>
   <%= render 'layouts/user_requests' %>
-  <%= render 'layouts/user_params' %>
 </body>
 </html>
