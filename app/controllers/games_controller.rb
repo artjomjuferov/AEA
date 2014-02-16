@@ -9,19 +9,22 @@ class GamesController < ApplicationController
     @id = params[:id]
     @my_id = current_user.id
     @stage = params[:stage]
-    @answer = params[:anwser]
-    if Game.exist_game?(@id, @my_id)
+    @answer = params[:answer]
+    p @id 
+    p @stage
+    p @answer 
+    if Game.exist_game?(@id, @my_id) and @stage != "answ"
       PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'exist'
-    elsif Game.buzy?(@id)
+    elsif Game.in_action?(@id)
       PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'buzy'
-    elsif @stage = "req"
-      Game.create(:from => @my_id, :to => @id, :status => 'req');
+    elsif @stage == "req"
+      Game.create(:from => @my_id, :to => @id, :status => @stage);
       PrivatePub.publish_to "/request/#{@id}",:id => @my_id, :stage => @stage
       PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'sent'
-    # elsif @stage = "answ"
-    #   if @answer == 'yes'
-    #     Game.
-    #     PrivatePub.publish_to "/request/#{@id}", :id => @my_id, :stage => @stage
+    elsif @stage == "answ"
+      Game.make_action(@id, @my_id) if @answer == 'yes'
+      PrivatePub.publish_to "/request/#{@id}", :id => @my_id, :stage => @stage, :answer => @answer
+      PrivatePub.publish_to "/request/#{@my_id}", :id => @id, :stage => @stage, :answer => @answer
     end
   end
 

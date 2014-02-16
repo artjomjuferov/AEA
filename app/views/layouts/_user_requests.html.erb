@@ -3,21 +3,29 @@
     <% Game.all_games(current_user.id).each do |game| %>
       <% if game.from == current_user.id %>
         <div id="game<%= game.to %>">
+          ------------->>>>>
           <% if game.status == "req" %>
             Waiting for <%= game.to %>
           <% elsif game.status == "action" %>
-          
+            WON <%= game.to %>??
+            <%= link_to "Yes", edit_game_path( game.to.to_s, {:stage => "result", :answer => 'yes'} ), :remote => true%>
+            <%= link_to "No", edit_game_path( game.to.to_s, {:stage => "result", :answer => 'no'} ),  :remote => true %>
           <% end %> 
+          >>>>>>>>>>>>>>>>>>
         </div>
       <% else %>
         <div id="game<%= game.from %>">
+          ------------->>>>>
           <% if game.status == "req" %>
-            <%= link_to "Yes", edit_game_path( game.to.to_s),  :remote => true, :stage => "answ", :answer => 'yes' %>
-            <%= link_to "No", edit_game_path( game.to.to_s), :remote => true, :stage => "answ", :answer => 'no' %> 
+            <%= link_to "Yes", edit_game_path( game.to.to_s, {:stage => "answ", :answer => 'yes'} ), :remote => true%>
+            <%= link_to "No", edit_game_path( game.to.to_s, {:stage => "answ", :answer => 'no'} ),  :remote => true %> 
             from <%= game.from %>
           <% elsif game.status == "action" %>
-          
+             WON <%= game.from %>??
+            <%= link_to "Yes", edit_game_path( game.to.to_s, {:stage => "result", :answer => 'yes'} ), :remote => true%>
+            <%= link_to "No", edit_game_path( game.to.to_s, {:stage => "result", :answer => 'no'} ),  :remote => true %> 
           <% end %> 
+          >>>>>>>>>>>>>>>>>>
         </div>
       <% end %>
     <% end %>

@@ -9,11 +9,11 @@ class Game < ActiveRecord::Base
     return false
   end
 
-  def self.buzy?(id)
+  def self.in_action?(id)
     a = self.where(from: id)
-    return true if a.first and a.first.status == 'buzy'
+    return true if a.first and a.first.status == 'action'
     a = self.where(to: id)
-    return true if a.first and a.first.status == 'buzy'
+    return true if a.first and a.first.status == 'action'
     return false 
   end
 
@@ -26,10 +26,15 @@ class Game < ActiveRecord::Base
     return result
   end
 
-  def agree_start()
-  end
-
-  def disagree_start()
-  end
-
+  def self.make_action(id1, id2)
+     t = self.arel_table
+    result = self.where(
+          t[:from].eq(id1).
+          and(t[:to].eq(id2)).
+          or t[:from].eq(id2).
+          and(t[:to].eq(id1))
+    ).first
+    result.status = 'action' if result
+    result.save
+  end  
 end

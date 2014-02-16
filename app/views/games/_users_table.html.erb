@@ -3,7 +3,7 @@ PLayers
   <div id="userInTable<%= user.id %>">
     <%= user.email %>
     <% if user_signed_in? and user.email != current_user.email %>
-      <%= link_to "Request a game", edit_game_path( user.id.to_s), :remote => true, :stage => "req", :class => "linkRequest" %> 
+      <%= link_to "Request a game", edit_game_path( user.id.to_s, :stage => "req"), :remote => true, :class => "linkRequest" %> 
     <% end %>
     <div class="userStatus">
     </div>
