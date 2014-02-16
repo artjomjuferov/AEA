@@ -1,12 +1,5 @@
 class Game < ActiveRecord::Base
-  attr_accessor :won, :status
-  
-  def after_initialize(to, from, status)
-    super(to, from, status)
-    self.to = to;
-    self.from = from;
-    self.status = status;
-  end
+  attr_accessor :won
   
   def self.exist_game?(id1, id2)
     a = self.where(from: id1).where(to: id2)

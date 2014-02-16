@@ -1,14 +1,25 @@
 <% if user_signed_in? %>
   <div id="gamesRequest">
     <% Game.all_games(current_user.id).each do |game| %>
-      <div id="game<%= game.to %>">
-        <% if game.status == "sent" %>
-         Waiting for <%= game.to %>
-        <% elsif game.status == "req" %>
-          <%= link_to "Yes", edit_game_path( game.to.to_s), remote => true, :stage => "answ", :answer => 'yes' %>
-          <%= link_to "No", edit_game_path( game.to.to_s), remote => true, :stage => "answ", :answer => 'no' %>  
-        <% end %> 
-      </div>
+      <% if game.from == current_user.id %>
+        <div id="game<%= game.to %>">
+          <% if game.status == "req" %>
+            Waiting for <%= game.to %>
+          <% elsif game.status == "action" %>
+          
+          <% end %> 
+        </div>
+      <% else %>
+        <div id="game<%= game.from %>">
+          <% if game.status == "req" %>
+            <%= link_to "Yes", edit_game_path( game.to.to_s),  :remote => true, :stage => "answ", :answer => 'yes' %>
+            <%= link_to "No", edit_game_path( game.to.to_s), :remote => true, :stage => "answ", :answer => 'no' %> 
+            from <%= game.from %>
+          <% elsif game.status == "action" %>
+          
+          <% end %> 
+        </div>
+      <% end %>
     <% end %>
   </div>
 <% end %>

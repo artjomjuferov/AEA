@@ -15,7 +15,7 @@ class GamesController < ApplicationController
     elsif Game.buzy?(@id)
       PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'buzy'
     elsif @stage = "req"
-      Game.create(:from => @my_id, :to => @id, :status => @stage);
+      Game.create(:from => @my_id, :to => @id, :status => 'req');
       PrivatePub.publish_to "/request/#{@id}",:id => @my_id, :stage => @stage
       PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'sent'
     # elsif @stage = "answ"
