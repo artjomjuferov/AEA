@@ -1,12 +1,12 @@
-$(".linkRequest").click(function () {
-  //$(this).attr("href");
-  alert("fasd");
-});
-
 if (window.currentUser)
 {
   PrivatePub.subscribe("/request/"+window.currentUser.id, function(data, channel) {
-    main = $("#gamesRequest");
+    // main = $("#gamesRequest");
+    // if (data.stage == "exist"){
+    //   main = $("#userInTable"+data.id);
+    //   obj = main.append('<div id="exist">Game or Requesst already exist</div>');
+    // }
+    /*
     if (data.stage == "req"){
       main.append('<div id="game'+data.id+'"></div>');
       obj = $("#game"+data.id);
@@ -25,7 +25,7 @@ if (window.currentUser)
       main.append('<div id="game'+data.id+'"></div>');
       obj = $("#game"+data.id);
       obj.append('Waiting for '+data.id);
-    }
+    }*/
   });
 }
 
