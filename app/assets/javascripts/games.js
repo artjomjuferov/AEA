@@ -1,7 +1,7 @@
 if (window.currentUser)
 {
   PrivatePub.subscribe("/request/"+window.currentUser.id, function(data, channel) {
-    // main = $("#gamesRequest");
+    main = $("#gamesRequest");
     if (data.stage == "exist"){
       obj = $("#userInTable"+data.id);
       obj.find(".userStatus").empty();
@@ -9,17 +9,15 @@ if (window.currentUser)
       
     } else if (data.stage == "buzy"){
       obj = $("#userInTable"+data.id);
-      obj.find(".userstatus").empty();
+      obj.find(".userStatus").empty();
       obj.append('Sorry he is in game');
-    }
-    /*
-    if (data.stage == "req"){
+    } else if (data.stage == "req"){
       main.append('<div id="game'+data.id+'"></div>');
       obj = $("#game"+data.id);
       obj.append("want to play with " + data.id);
       obj.append(linkYes(data.id));
       obj.append(linkNo(data.id));
-    } else if (data.stage == 'answ'){
+    }/*else if (data.stage == 'answ'){
       obj = $("#game"+data.id).empty;
       if (data.answer == 'yes'){
         obj.append("Let's play");
@@ -27,11 +25,11 @@ if (window.currentUser)
         alert('No '+data.id );
         obj.append("Sorry");
       }
-    } else if (data.stage == 'sent'){
+    }*/ else if (data.stage == 'sent'){
       main.append('<div id="game'+data.id+'"></div>');
       obj = $("#game"+data.id);
       obj.append('Waiting for '+data.id);
-    }*/
+    }
   });
 }
 

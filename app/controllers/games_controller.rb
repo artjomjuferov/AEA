@@ -12,13 +12,12 @@ class GamesController < ApplicationController
     @answer = params[:anwser]
     if Game.exist_game?(@id, @my_id)
       PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'exist'
-    elsif !Game.buzy?(@id)
+    elsif Game.buzy?(@id)
       PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'buzy'
-    # elsif @stage = "req"
-    #   p params[:anwser]
-    #   @game = Game.new(@my_id, @id);
-    #   PrivatePub.publish_to "/request/#{@id}",:id => @my_id, :stage => @stage
-    #   PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'sent'
+    elsif @stage = "req"
+      Game.create(:from => @my_id, :to => @id, :status => @stage);
+      PrivatePub.publish_to "/request/#{@id}",:id => @my_id, :stage => @stage
+      PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'sent'
     # elsif @stage = "answ"
     #   if @answer == 'yes'
     #     Game.
