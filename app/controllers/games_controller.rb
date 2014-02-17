@@ -5,27 +5,49 @@ class GamesController < ApplicationController
     @users = User.all
   end
 
-  def edit
+  def show_all_games
+    render partial: 'layouts/user_requests'
+  end
+
+
+  def req
     @id = params[:id]
     @my_id = current_user.id
-    @stage = params[:stage]
-    @answer = params[:answer]
-    p @id 
-    p @stage
-    p @answer 
-    if Game.exist_game?(@id, @my_id) and @stage != "answ"
-      PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'exist'
-    elsif Game.in_action?(@id)
-      PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'buzy'
-    elsif @stage == "req"
-      Game.create(:from => @my_id, :to => @id, :status => @stage);
-      PrivatePub.publish_to "/request/#{@id}",:id => @my_id, :stage => @stage
-      PrivatePub.publish_to "/request/#{@my_id}",:id => @id, :stage => 'sent'
-    elsif @stage == "answ"
-      Game.make_action(@id, @my_id) if @answer == 'yes'
-      PrivatePub.publish_to "/request/#{@id}", :id => @my_id, :stage => @stage, :answer => @answer
-      PrivatePub.publish_to "/request/#{@my_id}", :id => @id, :stage => @stage, :answer => @answer
+    @status = Game.get_status(@id, @my_id) 
+    if @status == "none"
+      Game.create(:from => @my_id, :to => @id, :status => "request");
+      PrivatePub.publish_to "/reqsuest/#{@id}", :id => @my_id 
+      render "games/edit"
+    else
+      render "games/buzy"
     end
+  end
+
+  def answer
+    @id = params[:id]
+    @my_id = current_user.id
+    @des = params[:des]
+    if @des == 'yes'
+      Game.make_action(@id, @my_id) 
+    else
+      Game.close_game(@id, @my_id)
+    end
+    PrivatePub.publish_to "/request/#{@id}", :id => @my_id 
+    render "games/edit"
+  end
+
+  def result
+    @id = params[:id]
+    @my_id = current_user.id
+    @des = params[:des]  
+    Game.first_won?(@id, @my_id) if @des == 'yes'     
+    Game.first_won?(@my_id, @id) if @des == 'no' 
+    PrivatePub.publish_to "/request/#{@id}"
+  end
+
+
+  def create_bid
+
   end
 
 end

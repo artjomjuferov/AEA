@@ -1,33 +1,23 @@
 <% if user_signed_in? %>
-  <div id="gamesRequest">
     <% Game.all_games(current_user.id).each do |game| %>
-      <% if game.from == current_user.id %>
-        <div id="game<%= game.to %>">
-          ------------->>>>>
-          <% if game.status == "req" %>
+      <div id="game<%= game.to %>">
+        <%= game.status %>
+        <% if game.from == current_user.id %>
+          <% if game.status == "request" %>
             Waiting for <%= game.to %>
           <% elsif game.status == "action" %>
             WON <%= game.to %>??
-            <%= link_to "Yes", edit_game_path( game.to.to_s, {:stage => "result", :answer => 'yes'} ), :remote => true%>
-            <%= link_to "No", edit_game_path( game.to.to_s, {:stage => "result", :answer => 'no'} ),  :remote => true %>
+            <%= make_yes_no(game.to, "result") %>
           <% end %> 
-          >>>>>>>>>>>>>>>>>>
-        </div>
-      <% else %>
-        <div id="game<%= game.from %>">
-          ------------->>>>>
-          <% if game.status == "req" %>
-            <%= link_to "Yes", edit_game_path( game.to.to_s, {:stage => "answ", :answer => 'yes'} ), :remote => true%>
-            <%= link_to "No", edit_game_path( game.to.to_s, {:stage => "answ", :answer => 'no'} ),  :remote => true %> 
-            from <%= game.from %>
+        <% else %>
+          <% if game.status == "request" %>
+            Request from <%= game.from %>
+            <%= make_yes_no(game.from, "answer") %>
           <% elsif game.status == "action" %>
-             WON <%= game.from %>??
-            <%= link_to "Yes", edit_game_path( game.to.to_s, {:stage => "result", :answer => 'yes'} ), :remote => true%>
-            <%= link_to "No", edit_game_path( game.to.to_s, {:stage => "result", :answer => 'no'} ),  :remote => true %> 
+            WON <%= game.from %>??
+            <%= make_yes_no(game.from, "result") %>
           <% end %> 
-          >>>>>>>>>>>>>>>>>>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     <% end %>
-  </div>
 <% end %>

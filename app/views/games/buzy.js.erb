@@ -1,0 +1,11 @@
+<% if @status == "request" %>
+  main = $("#userInTable"+<%= @id %>);
+  obj = main.find(".userStatus");
+  obj.empty();
+  obj.append('Request already exist');
+<% else %>
+  main = $("#userInTable"+<%= @id %>);
+  obj = main.find(".userStatus");
+  obj.empty();
+  obj.append('Sorry he is in game');
+<% end %>

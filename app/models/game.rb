@@ -1,6 +1,4 @@
 class Game < ActiveRecord::Base
-  attr_accessor :won
-  
   def self.exist_game?(id1, id2)
     a = self.where(from: id1).where(to: id2)
     return true if !a.empty?
@@ -17,6 +15,18 @@ class Game < ActiveRecord::Base
     return false 
   end
 
+  def self.get_status(id1, id2)
+    t = self.arel_table
+    result = self.where(
+          t[:from].eq(id1).
+          and(t[:to].eq(id2)).
+          or t[:from].eq(id2).
+          and(t[:to].eq(id1))
+    ).first
+    return result.status if result
+    return "none"      
+  end 
+
   def self.all_games(id)
     t = self.arel_table
     result = self.where(
@@ -26,15 +36,51 @@ class Game < ActiveRecord::Base
     return result
   end
 
-  def self.make_action(id1, id2)
-     t = self.arel_table
+  def self.close_game(id1, id2)
+    t = self.arel_table
     result = self.where(
           t[:from].eq(id1).
           and(t[:to].eq(id2)).
           or t[:from].eq(id2).
           and(t[:to].eq(id1))
     ).first
-    result.status = 'action' if result
-    result.save
+    result.destroy if result     
   end  
+
+  def self.make_action(id1, id2)
+    t = self.arel_table
+    result = self.where(
+          t[:from].eq(id1).
+          and(t[:to].eq(id2)).
+          or t[:from].eq(id2).
+          and(t[:to].eq(id1))
+    ).first
+    if result
+      result.status = "action"    
+      result.save
+    end
+  end  
+
+  def self.first_won?(id1, id2)
+    t = self.arel_table
+    result = self.where(
+          t[:from].eq(id1).
+          and(t[:to].eq(id2)).
+          or t[:from].eq(id2).
+          and(t[:to].eq(id1))
+    ).first
+    if result
+      if result.won == id2
+        result.status = "trouble"
+        result.save
+        return false
+      elsif result.won == nil
+        result.won = id1 
+      end
+      result.status = "done"
+      result.save
+      return true
+    end
+  end
+
 end
