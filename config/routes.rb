@@ -5,8 +5,8 @@ AEA::Application.routes.draw do
   
   get "games" => "games#index"
   get "games/:id/request" => "games#req", as: 'request_game'
-  get "games/:id/answer/:dec" => "games#answer", as: 'answer_game'
-  get "games/:id/result/:dec" => "games#result", as: 'result_game'  
+  get "games/:id/answer/:des" => "games#answer", as: 'answer_game'
+  get "games/:id/result/:des" => "games#result", as: 'result_game'  
   get "games/show_all" => "games#show_all_games", as: 'show_all_game'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

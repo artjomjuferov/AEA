@@ -27,7 +27,8 @@ class GamesController < ApplicationController
     @id = params[:id]
     @my_id = current_user.id
     @des = params[:des]
-    if @des == 'yes'
+    p @des
+    if @des == "yes"
       Game.make_action(@id, @my_id) 
     else
       Game.close_game(@id, @my_id)
