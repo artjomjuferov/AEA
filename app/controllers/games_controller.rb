@@ -5,11 +5,15 @@ class GamesController < ApplicationController
     @users = User.all
   end
 
+  def all_bid
+    @games = Game.where(status: "bid").all
+  end
+
   def show_all_games
     render partial: 'layouts/user_requests'
   end
 
-
+# why doesn't publish here is the question
   def req
     @id = params[:id]
     @my_id = current_user.id
@@ -48,8 +52,15 @@ class GamesController < ApplicationController
   end
 
 
-  def create_bid
+  def bid
+    @game = Game.new
+  end
 
+  def create_bid
+    @money = params[:game][:money]
+    @my_id = current_user.id
+    Game.create(:from => @my_id, :status => "bid", :money => @money);
+    redirect_to 'bid'
   end
 
 end

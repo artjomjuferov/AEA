@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140217202747) do
+ActiveRecord::Schema.define(version: 20140217203756) do
 
   create_table "games", force: true do |t|
     t.integer  "from"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20140217202747) do
     t.datetime "updated_at"
     t.integer  "first"
     t.string   "visible"
+    t.integer  "money"
   end
 
   create_table "users", force: true do |t|

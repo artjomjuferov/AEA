@@ -1,7 +1,6 @@
 <% if user_signed_in? %>
     <% Game.all_games(current_user.id).each do |game| %>
       <div id="game<%= game.to %>">
-        <%= game.status %>
         <% if game.from == current_user.id %>
           <% if game.status == "request" %>
             Waiting for <%= game.to %>

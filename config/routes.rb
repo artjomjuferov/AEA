@@ -4,10 +4,15 @@ AEA::Application.routes.draw do
   resources :users
   
   get "games" => "games#index"
+  get "games/all_bid" => "games#all_bid", as: 'all_bid_game'
   get "games/:id/request" => "games#req", as: 'request_game'
   get "games/:id/answer/:des" => "games#answer", as: 'answer_game'
   get "games/:id/result/:des" => "games#result", as: 'result_game'  
   get "games/show_all" => "games#show_all_games", as: 'show_all_game'
+  get "games/bid" => "games#bid", as: 'bid_game'
+  post "games/bid" => "games#create_bid"
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

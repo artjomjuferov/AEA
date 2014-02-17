@@ -1,0 +1,6 @@
+<%= form_for @game  ,url: {action: "bid"} do |f| %>
+  <%= f.label :money %>:
+  <%= f.text_field :money %>
+
+  <%= f.submit %>
+<% end %>

@@ -1,0 +1,9 @@
+PLayers
+<% @games.each do |game| %>
+  <div id="userInTable<%= game.from %>">
+    <%= game.from %>
+    <%= game.money %>
+  <div class="userStatus">
+    </div>
+  </div>
+<% end %>
