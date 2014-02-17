@@ -76,7 +76,7 @@ class Game < ActiveRecord::Base
         return false
       elsif result.won == nil
         result.won = id1 
-        result.status = "one_ok"
+        result.first = id1
       else 
         result.status = "ok"
       end

@@ -5,7 +5,7 @@
         <% if game.from == current_user.id %>
           <% if game.status == "request" %>
             Waiting for <%= game.to %>
-          <% elsif game.status == "action" %>
+          <% elsif game.status == "action" and game.first != current_user.id %>
             WON <%= game.to %>??
             <%= make_yes_no(game.to, "result") %>
           <% end %> 
@@ -13,14 +13,14 @@
           <% if game.status == "request" %>
             Request from <%= game.from %>
             <%= make_yes_no(game.from, "answer") %>
-          <% elsif game.status == "action" %>
+          <% elsif game.status == "action" and game.first != current_user.id %>
             WON <%= game.from %>??
             <%= make_yes_no(game.from, "result") %>
           <% end %> 
         <% end %>
         <% if game.status == "ok" %>
           Have a good day! Won <%= game.won %>
-        <% elsif game.status == "one_ok" and game.won == current_user.id %>
+        <% elsif game.status == "action" and game.first == current_user.id %>
           Waiting for your compititor results
         <% elsif game.status == "trouble" %>
           Ouuch!! We have send email to administration, take a while
