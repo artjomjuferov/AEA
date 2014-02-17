@@ -43,7 +43,8 @@ class GamesController < ApplicationController
     @des = params[:des]  
     Game.first_won?(@id, @my_id) if @des == 'yes'     
     Game.first_won?(@my_id, @id) if @des == 'no' 
-    PrivatePub.publish_to "/request/#{@id}"
+    PrivatePub.publish_to "/request/#{@id}", :id => @my_id
+    render "games/edit"
   end
 
 

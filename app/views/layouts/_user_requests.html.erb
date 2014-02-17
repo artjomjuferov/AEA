@@ -18,6 +18,13 @@
             <%= make_yes_no(game.from, "result") %>
           <% end %> 
         <% end %>
+        <% if game.status == "ok" %>
+          Have a good day! Won <%= game.won %>
+        <% elsif game.status == "one_ok" and game.won == current_user.id %>
+          Waiting for your compititor results
+        <% elsif game.status == "trouble" %>
+          Ouuch!! We have send email to administration, take a while
+        <% end %>
       </div>
     <% end %>
 <% end %>
