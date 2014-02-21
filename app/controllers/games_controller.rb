@@ -13,7 +13,7 @@ class GamesController < ApplicationController
     render partial: 'layouts/user_requests'
   end
 
-# why doesn't publish here is the question
+  # why doesn't publish here is the question
   def req
     @id = params[:id]
     @my_id = current_user.id
@@ -25,6 +25,11 @@ class GamesController < ApplicationController
     else
       render "games/buzy"
     end
+  end
+
+  def close 
+    User.destroy(params[:id])
+    render "games/delete"
   end
 
   def answer

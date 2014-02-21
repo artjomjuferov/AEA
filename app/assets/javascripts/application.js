@@ -14,4 +14,5 @@
 //= require jquery_ujs
 //= require private_pub
 //= require turbolinks
+//= require bootstrap.min
 //= require_tree .
