@@ -1,9 +1,11 @@
-PLayers
 <% @games.each do |game| %>
-  <div id="userInTable<%= game.from %>">
-    <%= game.from %>
+  <div id="bid<%= game.id %>">
+    <%= User.where(id: game.from).first.email %>
+    <%= game.status %>
     <%= game.money %>
-  <div class="userStatus">
+    <%= make_actions(game.from, game.id) %> 
+    <%# make_visible(game.id) %> 
+    <div class="userStatus">
     </div>
   </div>
 <% end %>

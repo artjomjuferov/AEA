@@ -1,0 +1,6 @@
+$("#bids").html("<%= escape_javascript(render('games/bids_table')) %>");
+<% if flash[:notice] %>
+  $("#notice").html("<%= escape_javascript(flash[:notice]) %>");  
+<% end %>
+
+

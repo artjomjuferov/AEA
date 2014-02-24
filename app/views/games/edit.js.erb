@@ -1,1 +1,6 @@
 $("#gamesRequest").html("<%= escape_javascript(render('layouts/user_requests')) %>");
+<% if flash[:notice] %>
+  $(".notice").html("<%= escape_javascript(flash[:notice]) %>");  
+<% end %>
+
+

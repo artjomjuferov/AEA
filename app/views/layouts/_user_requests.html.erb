@@ -4,6 +4,7 @@
         <% if game.from == current_user.id %>
           <% if game.status == "request" %>
             Waiting for <%= game.to %>
+            <%= link_to "Close", close_game_path(game.id), :method => "delete", :remote => true %> 
           <% elsif game.status == "action" and game.first != current_user.id %>
             WON <%= game.to %>??
             <%= make_yes_no(game.to, "result") %>
@@ -12,6 +13,7 @@
           <% if game.status == "request" %>
             Request from <%= game.from %>
             <%= make_yes_no(game.from, "answer") %>
+            <%= link_to "Close", close_game_path(game.id), :method => "delete", :remote => true %> 
           <% elsif game.status == "action" and game.first != current_user.id %>
             WON <%= game.from %>??
             <%= make_yes_no(game.from, "result") %>

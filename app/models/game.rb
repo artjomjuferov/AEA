@@ -1,4 +1,6 @@
 class Game < ActiveRecord::Base
+  
+
   def self.exist_game?(id1, id2)
     a = self.where(from: id1).where(to: id2)
     return true if !a.empty?
@@ -7,6 +9,7 @@ class Game < ActiveRecord::Base
     return false
   end
 
+  
   def self.in_action?(id)
     a = self.where(from: id)
     return true if a.first and a.first.status == 'action'
