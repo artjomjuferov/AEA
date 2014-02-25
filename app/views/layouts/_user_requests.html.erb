@@ -1,8 +1,9 @@
 <% if user_signed_in? %>
-    <% Game.all_games(current_user.id).each do |game| %>
-      <% next if game.visible == "no" %>
+    <% Game.all_games(current_user.id).each do |game| %>      
       <div id="game<%= game.to %>">
         <% if game.from == current_user.id %>
+        <%= game.visFrom %>
+         <% next if game.visFrom == "no" %>
           <% if game.status == "request" %>
             Waiting for <%= game.to %>
             <%= link_to "Close", close_game_path(game.id), :method => "delete", :remote => true %> 
@@ -11,6 +12,8 @@
             <%= make_yes_no(game.to, "result") %>
           <% end %> 
         <% else %>
+          <%= game.visTo %>
+          <% next if game.visTo == "no" %>
           <% if game.status == "request" %>
             Request from <%= game.from %>
             <%= make_yes_no(game.from, "answer") %>

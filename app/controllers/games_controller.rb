@@ -46,8 +46,14 @@ class GamesController < ApplicationController
   end
 
   def visible 
-    Game.find(params[:id]).update(visible: params[:des])
-    p "sd"
+    @game = Game.find(params[:id])
+    @des = params[:des]
+    if @game.from == current_user.id
+      @game.update(visFrom: @des)
+    else
+      p @des
+      @game.update(:visTo => @des)
+    end
     render "games/edit"
   end
 

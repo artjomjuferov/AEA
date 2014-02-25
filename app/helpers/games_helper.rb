@@ -12,10 +12,19 @@ module GamesHelper
   end
 
   def make_visible(id)
-    if Game.find(id).visible == 'yes'
-      html = link_to "Unvisible", visible_game_path(id,"no"), :remote => true
+    game_tmp = Game.find(id)
+    if game_tmp.from == current_user.id
+      if game_tmp.visFrom == 'yes'
+        html = link_to "Unvisible", visible_game_path(id,"no"), :remote => true
+      else
+        html = link_to "Visible", visible_game_path(id,"yes"), :remote => true
+      end
     else
-      html = link_to "Visible", visible_game_path(id,"yes"), :remote => true
+      if game_tmp.visTo == 'yes'
+        html = link_to "Unvisible", visible_game_path(id,"no"), :remote => true
+      else
+        html = link_to "Visible", visible_game_path(id,"yes"), :remote => true
+      end
     end
     return html
   end
