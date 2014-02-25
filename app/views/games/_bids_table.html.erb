@@ -3,7 +3,9 @@
     <%= User.where(id: game.from).first.email %>
     <%= game.status %>
     <%= game.money %>
-    <%= make_actions(game.from, game.id) %> 
+    <% if current_user.id == game.from %>
+      <%= make_actions(game.from, game.id) %>
+    <% end %> 
     <%# make_visible(game.id) %> 
     <div class="userStatus">
     </div>

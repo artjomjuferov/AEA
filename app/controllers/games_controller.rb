@@ -24,18 +24,20 @@ class GamesController < ApplicationController
     @my_id = current_user.id
     @status = Game.get_status(@id, @my_id) 
     if @status == "none"
-      Game.create(from: @my_id, to: @id, status: "request");
+      Game.create(from: @my_id, to: @id, status: "request")
       PrivatePub.publish_to "/reqsuest/#{@id}", id: @my_id
+      PrivatePub.publish_to "/reqsuest/#{@my_id}", id: @id
       render "games/edit"
     else
       render "games/buzy"
     end
   end
 
-  def close 
-    if Game.find(params[:id]).from == current_user.id and Game.destroy(params[:id])
+  def close
+    @game =  Game.find(params[:id])
+    if can_be_closed?(@game, current_user.id) and @game.destroy
       flash.now[:notice] = "Sucsesfully closed bid #{params[:id]}"
-      PrivatePub.publish_to "/reqsuest/#{@id}", id: @my_id, status: "close_ok" 
+      PrivatePub.publish_to "/reqsuest/#{@id}", id: @my_id
     else
       flash.now[:notice] = "Can't closed #{params[:id]}"
     end
@@ -57,7 +59,7 @@ class GamesController < ApplicationController
     else
       Game.close_game(@id, @my_id)
     end
-    PrivatePub.publish_to "/request/#{@id}", :id => @my_id 
+    PrivatePub.publish_to "/request/#{@id}", id: @my_id 
     render "games/edit"
   end
 
@@ -67,7 +69,7 @@ class GamesController < ApplicationController
     @des = params[:des]  
     Game.first_won?(@id, @my_id) if @des == 'yes'     
     Game.first_won?(@my_id, @id) if @des == 'no' 
-    PrivatePub.publish_to "/request/#{@id}", :id => @my_id
+    PrivatePub.publish_to "/request/#{@id}", id: @my_id
     render "games/edit"
   end
 
@@ -79,7 +81,7 @@ class GamesController < ApplicationController
   def create_bid
     @money = params[:game][:money]
     @my_id = current_user.id
-    if Game.create(from: @my_id, to: 0, status: "bid", money: @money);
+    if Game.create(from: @my_id, to: 0, status: "bid", money: @money)
       flash.now[:notice] = "Sucsesfully created bid( #{@money} )"
     else
       flash.now[:notice] = "Can't create bid( #{@money} )"
@@ -95,6 +97,13 @@ class GamesController < ApplicationController
   private
     def user_activity
       current_user.try :touch
+    end
+
+    def can_be_closed?(game, user_id)
+      return false if game.status == "trouble"  or game.status == "action" or game.status == "result" 
+      return true if game.from == user_id and game.status == "bid"
+      return true if game.from == user_id or game.to == user_id
+      return false 
     end
 
 end
