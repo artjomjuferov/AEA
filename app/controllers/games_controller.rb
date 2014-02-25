@@ -23,10 +23,10 @@ class GamesController < ApplicationController
     @id = params[:id]
     @my_id = current_user.id
     @status = Game.get_status(@id, @my_id) 
-    if @status == "none"
+    PrivatePub.publish_to "/reqsuest/new", id: @my_id
+    if @status == "none" or @status == "ok"   
       Game.create(from: @my_id, to: @id, status: "request")
-      PrivatePub.publish_to "/reqsuest/#{@id}", id: @my_id
-      PrivatePub.publish_to "/reqsuest/#{@my_id}", id: @id
+      PrivatePub.publish_to "/request/#{@id}", id: @my_id
       render "games/edit"
     else
       render "games/buzy"
@@ -37,7 +37,7 @@ class GamesController < ApplicationController
     @game =  Game.find(params[:id])
     if can_be_closed?(@game, current_user.id) and @game.destroy
       flash.now[:notice] = "Sucsesfully closed bid #{params[:id]}"
-      PrivatePub.publish_to "/reqsuest/#{@id}", id: @my_id
+      PrivatePub.publish_to "/request/#{@id}", id: @my_id
     else
       flash.now[:notice] = "Can't closed #{params[:id]}"
     end
