@@ -23,7 +23,6 @@ class GamesController < ApplicationController
     @id = params[:id]
     @my_id = current_user.id
     @status = Game.get_status(@id, @my_id) 
-    PrivatePub.publish_to "/reqsuest/new", id: @my_id
     if @status == "none" or @status == "ok"   
       Game.create(from: @my_id, to: @id, status: "request")
       PrivatePub.publish_to "/request/#{@id}", id: @my_id
@@ -62,6 +61,7 @@ class GamesController < ApplicationController
     @my_id = current_user.id
     @des = params[:des]
     if @des == "yes"
+      p @des
       Game.make_action(@id, @my_id) 
     else
       Game.close_game(@id, @my_id)
@@ -74,8 +74,8 @@ class GamesController < ApplicationController
     @id = params[:id]
     @my_id = current_user.id
     @des = params[:des]  
-    Game.first_won?(@id, @my_id) if @des == 'yes'     
-    Game.first_won?(@my_id, @id) if @des == 'no' 
+    Game.first_won?(@id, @my_id, @my_id) if @des == 'yes'     
+    Game.first_won?(@my_id, @id, @my_id) if @des == 'no' 
     PrivatePub.publish_to "/request/#{@id}", id: @my_id
     render "games/edit"
   end
