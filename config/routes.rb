@@ -12,7 +12,7 @@ AEA::Application.routes.draw do
   get "games/bid" => "games#bid", as: 'bid_game'
   post "games/bid" => "games#create_bid"
   delete "games/:id" => "games#close", as: "close_game" 
-  get "games/:id/visible" => "games#visible", as: "visible_game"
+  get "games/:id/visible/:des" => "games#visible", as: "visible_game"
   get "games/:id/my_games" => "games#my_games", as: "my_games" 
 
   # The priority is based upon order of creation: first created -> highest priority.

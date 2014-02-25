@@ -1,5 +1,6 @@
 <% if user_signed_in? %>
     <% Game.all_games(current_user.id).each do |game| %>
+      <% next if game.visible == "no" %>
       <div id="game<%= game.to %>">
         <% if game.from == current_user.id %>
           <% if game.status == "request" %>
@@ -13,7 +14,6 @@
           <% if game.status == "request" %>
             Request from <%= game.from %>
             <%= make_yes_no(game.from, "answer") %>
-            <%= link_to "Close", close_game_path(game.id), :method => "delete", :remote => true %> 
           <% elsif game.status == "action" and game.first != current_user.id %>
             WON <%= game.from %>??
             <%= make_yes_no(game.from, "result") %>
@@ -26,6 +26,7 @@
         <% elsif game.status == "trouble" %>
           Ouuch!! We have send email to administration, take a while
         <% end %>
+        <%= make_visible(game.id) %>
       </div>
     <% end %>
 <% end %>

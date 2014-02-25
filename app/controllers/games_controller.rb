@@ -47,7 +47,8 @@ class GamesController < ApplicationController
 
   def visible 
     Game.find(params[:id]).update(visible: params[:des])
-    # render "games/delete"
+    p "sd"
+    render "games/edit"
   end
 
   def answer
@@ -87,9 +88,7 @@ class GamesController < ApplicationController
       flash.now[:notice] = "Can't create bid( #{@money} )"
     end
     @game = Game.new
-    # render "games/notice"
     respond_to do |format|
-      # format.js   {render "games/notice"}
       format.html { render "bid" }
     end
   end
