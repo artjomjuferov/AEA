@@ -1,5 +1,6 @@
 <% if user_signed_in? %>
     <% Game.all_games(current_user.id).each do |game| %>      
+      <%= game.id %>
       <div id="game<%= game.to %>">
         <% if game.from == current_user.id %>
           <%= create_active_game_from game %>
