@@ -1,0 +1,13 @@
+<% if @games %>
+  <% @games.each do |game| %>
+    <div id="bid<%= game.id %>">
+      <%= User.where(id: game.from).first.email %>
+      <%= game.money %>
+      <% if current_user.id != game.from %>
+        <%= make_actions(game.from, game.id) %>
+      <% end %> 
+      <div class="userStatus">
+      </div>
+    </div>
+  <% end %>
+<% end %>

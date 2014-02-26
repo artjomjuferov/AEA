@@ -5,21 +5,21 @@
   <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
   <% if user_signed_in? %>
   
-  <%= render 'layouts/user_id' %>
+  <%= render 'layouts/shared/user_id' %>
   <% end %>
   <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
   <%= csrf_meta_tags %>
   <%= javascript_include_tag "http://localhost:9292/faye.js" %>
 </head>
 <body>
-  <%= render 'layouts/nav_menu' %>
+  <%= render 'layouts/shared/nav_menu' %>
   <br/><br/><br/>
-  <%= render 'layouts/flash_widget' %>
+  <%= render 'layouts/shared/flash_widget' %>
   <%= yield %>
-  <%= render 'layouts/user_subscribe' %>
+  <%= render 'layouts/shared/user_subscribe' %>
 
   <div id="gamesRequest">
-    <%= render 'layouts/user_requests' %>
+    <%= render 'games/shared/request_games_table' %>
   </div>
 </body>
 </html>

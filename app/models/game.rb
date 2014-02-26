@@ -1,5 +1,11 @@
 class Game < ActiveRecord::Base
-  
+  before_save :default_values
+
+  validates :from, :status, :to, :money, :presence => true
+  validates :deliver_till_hour, :numericality => { :greater_than => 0 }
+  validates :from, :numericality => { :greater_than => 0 }
+
+  validate :check_from_and_to
 
   def self.get_status(id1, id2)
     t = self.arel_table
@@ -70,5 +76,17 @@ class Game < ActiveRecord::Base
       return true
     end
   end
+
+  private
+    def default_values
+      self.to ||= 0
+      self.status ||= "bid"
+      self.visFrom ||= "yes"
+      self.visTo ||= "yes"
+    end
+
+    def check_from_and_to
+      errors.add(:password, "Can't invite yourself") if self.to == self.from
+    end
 
 end

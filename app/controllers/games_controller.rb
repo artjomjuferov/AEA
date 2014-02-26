@@ -11,14 +11,13 @@ class GamesController < ApplicationController
   end
 
   def show_all_games
-    render partial: 'layouts/user_requests'
+    render partial: 'devise/shared/request_games_table'
   end
 
   def my_games
     @games = Game.all_games(current_user.id)
   end
 
-  # why doesn't publish here is the question
   def req
     @id = params[:id]
     @my_id = current_user.id
@@ -32,36 +31,11 @@ class GamesController < ApplicationController
     end
   end
 
-  def close
-    @game =  Game.find(params[:id])
-    if can_be_closed?(@game, current_user.id) and @game.destroy
-      flash.now[:notice] = "Sucsesfully closed bid #{params[:id]}"
-      PrivatePub.publish_to "/request/#{@id}", id: @my_id
-    else
-      flash.now[:notice] = "Can't closed #{params[:id]}"
-    end
-    @games = Game.where(status: "bid").all
-    render "games/bid_edit"
-  end
-
-  def visible 
-    @game = Game.find(params[:id])
-    @des = params[:des]
-    if @game.from == current_user.id
-      @game.update(visFrom: @des)
-    else
-      p @des
-      @game.update(:visTo => @des)
-    end
-    render "games/edit"
-  end
-
   def answer
     @id = params[:id]
     @my_id = current_user.id
     @des = params[:des]
     if @des == "yes"
-      p @des
       Game.make_action(@id, @my_id) 
     else
       Game.close_game(@id, @my_id)
@@ -81,6 +55,32 @@ class GamesController < ApplicationController
   end
 
 
+  def close
+    @game =  Game.find(params[:id])
+    if can_be_closed?(@game, current_user.id) and @game.destroy
+      flash.now[:notice] = "Sucsesfully closed bid #{params[:id]}"
+      PrivatePub.publish_to "/request/#{@id}", id: @my_id
+    else
+      flash.now[:notice] = "Can't closed #{params[:id]}"
+    end
+    @games = Game.where(status: "bid").all
+    render "games/edit"
+  end
+
+  def visible 
+    @game = Game.find(params[:id])
+    @des = params[:des]
+    @games = Game.all_games(current_user.id)
+    if @game.from == current_user.id
+      @game.update(visFrom: @des)
+    else
+      p @des
+      @game.update(:visTo => @des)
+    end
+    render "games/edit"
+  end
+
+
   def bid
     @game = Game.new
   end
@@ -88,7 +88,7 @@ class GamesController < ApplicationController
   def create_bid
     @money = params[:game][:money]
     @my_id = current_user.id
-    if Game.create(from: @my_id, to: 0, status: "bid", money: @money)
+    if Game.create(from: @my_id, money: @money)
       flash.now[:notice] = "Sucsesfully created bid( #{@money} )"
     else
       flash.now[:notice] = "Can't create bid( #{@money} )"
