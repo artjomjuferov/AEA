@@ -30,11 +30,16 @@ module GamesHelper
     return html
   end
 
-  def make_actions(user_id, game_id)
-    html = link_to "Request a game", request_game_path(user_id), :remote => true
+  def create_request_game(user_id, money)
+    return "" if user_id == current_user.id
+    html = link_to "Request a game", request_game_path(user_id, money), :class => "requestGameLink", :remote => true
+    html += text_field_tag 'WHere', 1 
+    return html 
+  end
+
+  def create_close_game(user_id, game_id)
     if user_id == current_user.id
       html += link_to "Close", close_game_path(game_id), :method => "delete", :remote => true 
     end
-    return html 
   end
 end

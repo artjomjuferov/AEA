@@ -5,7 +5,7 @@ AEA::Application.routes.draw do
   
   get "games" => "games#index"
   get "games/all_bid" => "games#all_bid", as: 'all_bid_game'
-  get "games/:id/request" => "games#req", as: 'request_game'
+  get "games/:id/request/:money" => "games#req", as: 'request_game'
   get "games/:id/answer/:des" => "games#answer", as: 'answer_game'
   get "games/:id/result/:des" => "games#result", as: 'result_game'  
   get "games/show_all" => "games#show_all_games", as: 'show_all_game'

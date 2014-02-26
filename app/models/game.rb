@@ -66,7 +66,7 @@ class Game < ActiveRecord::Base
         result.status = "trouble"
         result.save
         return false
-      elsif result.won == nil
+      elsif result.won == 0
         result.won = id1 
         result.first = id
       else 
