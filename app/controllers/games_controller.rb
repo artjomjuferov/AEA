@@ -54,12 +54,11 @@ class GamesController < ApplicationController
     id = params[:id]
     money = params[:money]
     my_id = current_user.id
-    # url = URI(request.referer).path.split('/').first
     game = Game.get_bid_game(id, money)
     if game
-      game = Game.update(from: my_id, to: id, status: "request", money: money)
+      game.update(from: my_id, to: id, status: "request", money: money)
       if !game.valid? 
-        flash.now[:notice] = game.errors.first 
+        flash.now[:notice] = game.errors.get(:from).first 
       else  
         flash.now[:notice] = "Made request game to player #{id} with #{money} $"
         PrivatePub.publish_to "/request/#{id}", id: my_id

@@ -8,11 +8,12 @@ class Game < ActiveRecord::Base
   
   def self.get_bid_game(id, money)
     t = self.arel_table
-    result = self.find(
+    result = self.where(
           t[:from].eq(id).
-          and t[:status].eq('bid').
-          and t[:money].eq(money)
-    ) 
+          and(t[:status].eq('bid')).
+          and(t[:money].eq(money))
+    ).first
+    p result
     return result      
   end
 

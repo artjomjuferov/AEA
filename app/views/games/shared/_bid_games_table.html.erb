@@ -4,7 +4,7 @@
       <%= User.where(id: game.from).first.email %>
       <%= game.money %>
       <% if current_user.id != game.from %>
-        <%= create_request_game(game.from, game.id) %>
+        <%= create_request_game(game.from, game.money) %>
       <% end %> 
       <div class="userStatus">
       </div>
