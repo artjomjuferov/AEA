@@ -71,7 +71,7 @@ class GamesController < ApplicationController
 
 
   def answer
-    id = params[:id]
+    game_id = params[:id]
     my_id = current_user.id
     des = params[:des]
     if des == "yes"
@@ -80,7 +80,7 @@ class GamesController < ApplicationController
       Game.close_game(id, my_id)
     end
     PrivatePub.publish_to "/request/#{id}", id: my_id 
-    render "games/edit"
+    render "games/request_games"
   end
 
   def result
