@@ -32,10 +32,10 @@ module GamesHelper
 
   def create_request_game(user_id, money)
     return "" if user_id == current_user.id
-    url = URI(request.referer).path.split('/')[1]
-    if url = "all_bid"
+    path = URI(request.original_url).path.split('/')[2]
+    if path == "all_bid"
       html = link_to "Request a game", request_bid_game_path(user_id, money), :class => "requestGameLink", :remote => true
-    elsif url = ""
+    elsif path == nil
       html = link_to "Request a game", request_game_path(user_id, money), :class => "requestGameLink", :remote => true
     end
     html += text_field_tag 'WHere', 1 

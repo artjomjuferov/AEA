@@ -39,12 +39,13 @@ class GamesController < ApplicationController
     id = params[:id]
     money = params[:money]
     my_id = current_user.id
-    game = Game.create(from: my_id, to: id, status: "request", money: money)
-    if !game.valid? 
-      flash.now[:notice] = game.errors.first 
-    else  
+    game = Game.new(from: my_id, to: id, status: "request", money: money)
+    if game.valid? 
+      game.save
       flash.now[:notice] = "Made request game to player #{id} with #{money} $"
       PrivatePub.publish_to "/request/#{id}", id: my_id
+    else  
+      flash.now[:notice] = game.errors.get(:from).pop 
     end
     render "games/request_games"
   end
