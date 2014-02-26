@@ -4,7 +4,7 @@
         <% if game.from == current_user.id %>
           <%= create_active_game_from game %>
         <% else %>
-          <%= create_active_game_from game %>
+          <%= create_active_game_to game %>
         <% end %>
         <%= create_active_same game %>
       </div>

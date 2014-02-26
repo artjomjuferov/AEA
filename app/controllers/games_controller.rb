@@ -75,9 +75,15 @@ class GamesController < ApplicationController
     my_id = current_user.id
     des = params[:des]
     if des == "yes"
-      Game.make_action(id, my_id) 
+      game = Game.find(params[:id]).update(status: "action") 
+      if !game.valid?
+        flash.now[:notice] = game.errors.get(:from).first 
+      end 
     else
-      Game.close_game(id, my_id)
+      game = Game.find(params[:id]).update(status: "closed") 
+      if !game.valid?
+        flash.now[:notice] = game.errors.get(:from).first 
+      end
     end
     PrivatePub.publish_to "/request/#{id}", id: my_id 
     render "games/request_games"

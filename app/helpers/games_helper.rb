@@ -1,14 +1,14 @@
 
 module GamesHelper
-  def make_yes_no(id, stage)
+  def make_yes_no(game, stage)
     if stage == "result"
-      html = link_to "Yes", result_game_path(id, 'yes'), :remote => true 
-      html += link_to "No", result_game_path(id, 'no' ),  :remote => true 
+      html = link_to "Yes", result_game_path(game.id, 'yes'), :remote => true 
+      html += link_to "No", result_game_path(game.id, 'no' ),  :remote => true 
     elsif stage == "answer"
-      html = link_to "Yes", answer_game_path(id, 'yes'), :remote => true 
-      html += link_to "No", answer_game_path(id, 'no' ),  :remote => true 
+      html = link_to "Yes", answer_game_path(game.id, 'yes'), :remote => true 
+      html += link_to "No", answer_game_path(game.id, 'no' ),  :remote => true 
     end
-    return html.html_safe
+    html.html_safe if html
   end
 
   def create_visible_switcher(id)
@@ -27,7 +27,7 @@ module GamesHelper
         html = link_to "Visible", visible_game_path(id,"yes"), :remote => true
       end
     end
-    return html.html_safe
+    html.html_safe if html
   end
 
   def create_request_game(user_id, money)
@@ -39,14 +39,14 @@ module GamesHelper
       html = link_to "Request a game", request_game_path(user_id, money), :class => "requestGameLink", :remote => true
       html += text_field_tag 'Money', 1 
     end
-    return html.html_safe
+    html.html_safe if html
   end
 
   def create_close_game(user_id, game_id)
     if user_id == current_user.id
-      html == link_to("Close", close_game_path(game_id), :method => "delete", :remote => true) 
+      html = link_to "Close", close_game_path(game_id), :method => "delete", :remote => true 
     end
-    return html.html_safe
+    html.html_safe if html
   end
 
 
@@ -57,21 +57,21 @@ module GamesHelper
       html += link_to "Close", close_game_path(game.id), :method => "delete", :remote => true
     elsif game.status == "action" and game.first != current_user.id
       html = "WON #{game.to}"
-      html += make_yes_no game.to, "result" 
+      html += make_yes_no game, "result" 
     end
-    return html.html_safe
+    html.html_safe if html
   end
 
   def create_active_game_to(game)
     return "" if game.visTo == 'no'
     if game.status == 'request'
       html = "Request from #{game.from} "
-      html += make_yes_no game.from, "answer"
+      html += make_yes_no game, "answer"
     elsif game.status == "action" and game.first != current_user.id
       html = "WON #{game.from}"
-      html += make_yes_no game.from, "result" 
+      html += make_yes_no game, "result" 
     end
-    return html.html_safe
+    html.html_safe if html
   end
 
 
@@ -86,7 +86,7 @@ module GamesHelper
       html = "Ouuch!! We have send email to administration, take a while"
     end
     html += create_visible_switcher game.id 
-    return html.html_safe
+    html.html_safe if html
   end
 
 end
