@@ -45,7 +45,8 @@ class GamesController < ApplicationController
       flash.now[:notice] = "Made request game to player #{id} with #{money} $"
       PrivatePub.publish_to "/request/#{id}", id: my_id
     else  
-      flash.now[:notice] = game.errors.get(:from).pop 
+      p game.errors
+      # flash.now[:notice] = game.errors.get(:from).pop 
     end
     render "games/request_games"
   end
@@ -76,7 +77,7 @@ class GamesController < ApplicationController
     des = params[:des]
     game = Game.find(params[:id])
     game.from == my_id ? id = game.to : id = game.from
-
+    p my_id,id
     if des == "yes"
       game.update(status: "action") 
       p game.errors
@@ -89,18 +90,28 @@ class GamesController < ApplicationController
         flash.now[:notice] = game.errors.get(:from).first 
       end
     end
-    PrivatePub.publish_to "/request/#{game.from}", id: my_id 
+    PrivatePub.publish_to "/request/#{id}", id: my_id 
     render "games/request_games"
   end
 
   def result
-    id = params[:id]
+    game_id = params[:id]
     my_id = current_user.id
-    des = params[:des]  
-    Game.first_won?(id, my_id, my_id) if des == 'yes'     
-    Game.first_won?(my_id, id, my_id) if des == 'no' 
+    des = params[:des]
+    game = Game.find(params[:id])
+    game.from == my_id ? id = game.to : id = game.from
+    p my_id,id
+    if des == "yes"
+      game.update(won: id, first: my_id)  
+    else
+      game.update(won: my_id, first: my_id) 
+    end  
+    if !game.valid?
+      p game.errors
+      # flash.now[:notice] = game.errors.get(:to).first 
+    end
     PrivatePub.publish_to "/request/#{id}", id: my_id
-    render "games/edit"
+    render "games/request_games"
   end
 
 

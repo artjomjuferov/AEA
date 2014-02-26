@@ -1,11 +1,12 @@
 class Game < ActiveRecord::Base
-  before_save :default_values
+  after_initialize :default_values
 
   validates :from, :money, :status, presence: true
   validates :money, numericality: { greater_than: 0 }
 
   validate :duplicate, :exist_bid, :buzy_to, :exist_request, :from_eq_to, :buzy_from  
-  
+  validate :correct_result
+
   def self.get_bid_game(id, money)
     t = self.arel_table
     result = self.where(
@@ -76,6 +77,7 @@ class Game < ActiveRecord::Base
       if result.won == id2
         result.status = "trouble"
         result.save
+        p result.errors
         return false
       elsif result.won == 0
         result.won = id1 
@@ -84,6 +86,7 @@ class Game < ActiveRecord::Base
         result.status = "ok"
       end
       result.save
+      p result.errors
       return true
     end
   end
@@ -97,7 +100,6 @@ class Game < ActiveRecord::Base
     end
     return true
   end
-
 
 
   private
@@ -115,7 +117,8 @@ class Game < ActiveRecord::Base
     end
 
     def duplicate
-      errors.add(:from, "invites yourself") if self.status_was == self.status
+      # p self.status_was,"sd",self.status
+      errors.add(:from, "already exist") if self.status_was == self.status and self.status == "request"
     end
 
     def buzy_from
@@ -126,7 +129,7 @@ class Game < ActiveRecord::Base
       ).where(
           t[:status].eq('action')
       ).first
-      errors.add(:from, "already have game") if result
+      errors.add(:from, "already have game") if result and self.won == 0
     end
 
     def buzy_to
@@ -137,7 +140,7 @@ class Game < ActiveRecord::Base
       ).where(
           t[:status].eq('action')
       ).first
-      errors.add(:to, "is buzy") if result
+      errors.add(:to, "is buzy") if result and self.won == 0
     end
 
     def exist_request 
@@ -162,6 +165,13 @@ class Game < ActiveRecord::Base
           and(t[:status].eq('bid'))
       ).first
       errors.add(:from, "have this bid") if result
+    end
+
+    def correct_result
+      if self.won_was and self.won_was != 0 and self.won_was != self.won
+        self.status = "trouble"
+      end
+      self.status = "ok" if self.won_was == self.won and self.won != 0
     end
 
 end

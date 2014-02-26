@@ -1,7 +1,8 @@
 if (window.currentUser)
 {
   PrivatePub.subscribe("/request/"+window.currentUser.id, function(data, channel) {
-    $("#gamesRequest").load("/games/show_all");
+    alert("some");
+    $("#gamesRequest").load("/games/show_all_game");
   });
 }
 
