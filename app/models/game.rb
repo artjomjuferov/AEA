@@ -4,7 +4,11 @@ class Game < ActiveRecord::Base
   validates :from, :status, :to, :money, :presence => true
   validates :from, :numericality => { :greater_than => 0 }
 
-  validate :check_from_and_to
+  validate :from_eq_to
+  validate :able_to_request
+  validate :buzy_from
+  validate :buzy_to
+  validate :exist_request
 
   def self.get_with_status(id1, id2)
     t = self.arel_table
@@ -87,7 +91,11 @@ class Game < ActiveRecord::Base
     return true
   end
 
+
+
+
   private
+    
     def default_values
       self.to ||= 0
       self.status ||= "bid"
@@ -97,8 +105,47 @@ class Game < ActiveRecord::Base
       self.first ||= 0
     end
 
-    def check_from_and_to
-      errors.add(:password, "Can't invite yourself") if self.to == self.from
+    def from_eq_to
+      errors.add(:to, "Can't invite yourself") if self.to == self.from
+    end
+
+    def able_to_request
+      errors.add(:status, "You have already made this request") if self.status_was == self.status
+    end
+
+    def buzy_from
+      t = Game.arel_table
+      result = Game.where(
+          t[:from].eq(self.from).
+          or(t[:to].eq(self.from))
+      ).where(
+          t[:status].eq('action')
+      ).first
+      errors.add(:status, "You already have game") if result
+    end
+
+    def buzy_to
+      t = Game.arel_table
+      result = Game.where(
+          t[:from].eq(self.to).
+          or(t[:to].eq(self.to))
+      ).where(
+          t[:status].eq('action')
+      ).first
+      errors.add(:status, "He is buzy") if result
+    end
+
+    def exist_request 
+      t = Game.arel_table
+      result = Game.where(
+          t[:from].eq(self.to).
+          and(t[:to].eq(self.from)).
+          or t[:from].eq(self.from).
+          and(t[:to].eq(self.to))
+      ).where(
+          t[:status].eq('request')
+      ).first
+      errors.add(:status, "Already have this request") if result
     end
 
 end
