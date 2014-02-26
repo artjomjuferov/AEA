@@ -23,18 +23,26 @@ class GamesController < ApplicationController
     money = params[:money]
     my_id = current_user.id
     game = Game.get_with_status(id, my_id) 
-    # p game.status if game
-    # p game
-    #URI(request.referer).path
+    url = URI(request.referer).path.split('/').first
+    p url
     if !game or (game and game.status != "bid")
-      error = Game.create(from: my_id, to: id, status: "request", money: money)
-      flash.now[:notice] = 
-      PrivatePub.publish_to "/request/#{id}", id: my_id
+      game = Game.create(from: my_id, to: id, status: "request", money: money)
+      if !game 
+        flash.now[:notice] = game.errors.full_messages  
+      else  
+        flash.now[:notice] = "Request game to player #{id}"
+        PrivatePub.publish_to "/request/#{id}", id: my_id
+      end
     elsif game and game.status == "bid"
-      game.update(from: my_id, to: id, status: "request")
-      PrivatePub.publish_to "/request/#{id}", id: my_id
+      game = game.update(from: my_id, to: id, status: "request")
+      if !game 
+        flash.now[:notice] = game.errors.full_messages  
+      else  
+        flash.now[:notice] = "Request game to player #{id}"
+        PrivatePub.publish_to "/request/#{id}", id: my_id
+      end
     end
-    ender "games/request_games"
+    render "games/request_games"
   end
 
   def answer
