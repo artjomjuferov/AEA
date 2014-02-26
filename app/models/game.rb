@@ -111,11 +111,11 @@ class Game < ActiveRecord::Base
     end
 
     def from_eq_to
-      errors.add(:from, "invite yourself") if self.to == self.from
+      errors.add(:from, "invsite yourself") if self.to == self.from
     end
 
     def duplicate
-      errors.add(:from, "invite yourself") if self.status_was == self.status
+      errors.add(:from, "invites yourself") if self.status_was == self.status
     end
 
     def buzy_from
@@ -150,7 +150,7 @@ class Game < ActiveRecord::Base
       ).where(
           t[:status].eq('request')
       ).first
-      errors.add(:from, "have this request") if result
+      errors.add(:from, "have this request") if result and self.status != "action"
     end
 
     def exist_bid 

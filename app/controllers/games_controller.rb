@@ -74,18 +74,22 @@ class GamesController < ApplicationController
     game_id = params[:id]
     my_id = current_user.id
     des = params[:des]
+    game = Game.find(params[:id])
+    game.from == my_id ? id = game.to : id = game.from
+
     if des == "yes"
-      game = Game.find(params[:id]).update(status: "action") 
+      game.update(status: "action") 
+      p game.errors
       if !game.valid?
         flash.now[:notice] = game.errors.get(:from).first 
       end 
     else
-      game = Game.find(params[:id]).update(status: "closed") 
+      game.update(status: "closed") 
       if !game.valid?
         flash.now[:notice] = game.errors.get(:from).first 
       end
     end
-    PrivatePub.publish_to "/request/#{id}", id: my_id 
+    PrivatePub.publish_to "/request/#{game.from}", id: my_id 
     render "games/request_games"
   end
 
