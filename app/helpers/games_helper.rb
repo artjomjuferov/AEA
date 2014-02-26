@@ -8,7 +8,7 @@ module GamesHelper
       html = link_to "Yes", answer_game_path(id, 'yes'), :remote => true 
       html += link_to "No", answer_game_path(id, 'no' ),  :remote => true 
     end
-    return html
+    return html.html_safe
   end
 
   def create_visible_switcher(id)
@@ -27,7 +27,7 @@ module GamesHelper
         html = link_to "Visible", visible_game_path(id,"yes"), :remote => true
       end
     end
-    return html
+    return html.html_safe
   end
 
   def create_request_game(user_id, money)
@@ -39,12 +39,53 @@ module GamesHelper
       html = link_to "Request a game", request_game_path(user_id, money), :class => "requestGameLink", :remote => true
       html += text_field_tag 'Money', 1 
     end
-    return html 
+    return html.html_safe
   end
 
   def create_close_game(user_id, game_id)
     if user_id == current_user.id
-      html += link_to "Close", close_game_path(game_id), :method => "delete", :remote => true 
+      html == link_to("Close", close_game_path(game_id), :method => "delete", :remote => true) 
     end
+    return html.html_safe
   end
+
+
+  def create_active_game_from(game)
+    return "" if game.visFrom == 'no'
+    if game.status == 'request'
+      html = "Waiting for #{game.to} "
+      html += link_to "Close", close_game_path(game.id), :method => "delete", :remote => true
+    elsif game.status == "action" and game.first != current_user.id
+      html = "WON #{game.to}"
+      html += make_yes_no game.to, "result" 
+    end
+    return html.html_safe
+  end
+
+  def create_active_game_to(game)
+    return "" if game.visTo == 'no'
+    if game.status == 'request'
+      html = "Request from #{game.from} "
+      html += make_yes_no game.from, "answer"
+    elsif game.status == "action" and game.first != current_user.id
+      html = "WON #{game.from}"
+      html += make_yes_no game.from, "result" 
+    end
+    return html.html_safe
+  end
+
+
+  def create_active_same(game)
+    if game.status == "ok"
+      html = "Have a good day! Won #{game.won}"
+    elsif game.status == "action" and game.first == current_user.id
+      html = "Waiting for your compititor results"
+    elsif game.status == "trouble" 
+      html = "Ouuch!! We have send email to administration, take a while"
+    end
+    return html.html_safe
+  end
+
+
+
 end
