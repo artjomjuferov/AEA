@@ -11,7 +11,7 @@ class GamesController < ApplicationController
   end
 
   def show_all_games
-    render partial: 'devise/shared/request_games_table'
+    render partial: 'games/shared/request_games_table'
   end
 
   def my_games
@@ -19,47 +19,53 @@ class GamesController < ApplicationController
   end
 
   def req
-    @id = params[:id]
-    @my_id = current_user.id
-    @status = Game.get_status(@id, @my_id) 
-    if @status == "none" or @status == "ok"   
-      Game.create(from: @my_id, to: @id, status: "request")
-      PrivatePub.publish_to "/request/#{@id}", id: @my_id
+    id = params[:id]
+    my_id = current_user.id
+    game = Game.get_with_status(id, my_id) 
+    if game and game.status != "bid"
+      p my_id
+      p id
+      Game.create(from: my_id, to: id, status: "request")
+      PrivatePub.publish_to "/request/#{id}", id: my_id
+      render "games/request_game"
+    elsif game and game.status == "bid"
+      game.update(to: my_id, status: "request")
+      PrivatePub.publish_to "/request/#{id}", id: my_id
       render "games/edit"
-    else
+    else 
       render "games/buzy"
     end
   end
 
   def answer
-    @id = params[:id]
-    @my_id = current_user.id
-    @des = params[:des]
-    if @des == "yes"
-      Game.make_action(@id, @my_id) 
+    id = params[:id]
+    my_id = current_user.id
+    des = params[:des]
+    if des == "yes"
+      Game.make_action(id, my_id) 
     else
-      Game.close_game(@id, @my_id)
+      Game.close_game(id, my_id)
     end
-    PrivatePub.publish_to "/request/#{@id}", id: @my_id 
+    PrivatePub.publish_to "/request/#{id}", id: my_id 
     render "games/edit"
   end
 
   def result
-    @id = params[:id]
-    @my_id = current_user.id
-    @des = params[:des]  
-    Game.first_won?(@id, @my_id, @my_id) if @des == 'yes'     
-    Game.first_won?(@my_id, @id, @my_id) if @des == 'no' 
-    PrivatePub.publish_to "/request/#{@id}", id: @my_id
+    id = params[:id]
+    my_id = current_user.id
+    des = params[:des]  
+    Game.first_won?(id, my_id, my_id) if des == 'yes'     
+    Game.first_won?(my_id, id, my_id) if des == 'no' 
+    PrivatePub.publish_to "/request/#{id}", id: my_id
     render "games/edit"
   end
 
 
   def close
-    @game =  Game.find(params[:id])
-    if can_be_closed?(@game, current_user.id) and @game.destroy
+    game =  Game.find(params[:id])
+    if can_be_closed?(game, current_user.id) and game.destroy
       flash.now[:notice] = "Sucsesfully closed bid #{params[:id]}"
-      PrivatePub.publish_to "/request/#{@id}", id: @my_id
+      PrivatePub.publish_to "/request/#{id}", id: my_id
     else
       flash.now[:notice] = "Can't closed #{params[:id]}"
     end
@@ -68,35 +74,31 @@ class GamesController < ApplicationController
   end
 
   def visible 
-    @game = Game.find(params[:id])
-    @des = params[:des]
-    @games = Game.all_games(current_user.id)
-    if @game.from == current_user.id
-      @game.update(visFrom: @des)
+    game = Game.find(params[:id])
+    des = params[:des]
+    games = Game.all_games(current_user.id)
+    if game.from == current_user.id
+      game.update(visFrom: des)
     else
-      p @des
-      @game.update(:visTo => @des)
+      game.update(visTo: des)
     end
     render "games/edit"
   end
-
 
   def bid
     @game = Game.new
   end
 
   def create_bid
-    @money = params[:game][:money]
-    @my_id = current_user.id
-    if Game.create(from: @my_id, money: @money)
-      flash.now[:notice] = "Sucsesfully created bid( #{@money} )"
+    money = params[:game][:money]
+    my_id = current_user.id
+    if Game.create(from: my_id, money: money)
+      flash.now[:notice] = "Sucsesfully created bid( #{money} )"
     else
-      flash.now[:notice] = "Can't create bid( #{@money} )"
+      flash.now[:notice] = "Can't create bid( #{money} )"
     end
     @game = Game.new
-    respond_to do |format|
-      format.html { render "bid" }
-    end
+    render "bid"
   end
 
   private

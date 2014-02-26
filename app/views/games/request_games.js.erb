@@ -1,0 +1,4 @@
+$("#requestGames").html("<%= escape_javascript(render('games/shared/request_games_table')) %>");
+<% if flash[:notice] %>
+  $("#notice").html("<%= escape_javascript(flash[:notice]) %>");  
+<% end %>

@@ -1,6 +1,5 @@
-$("#gamesRequest").html("<%= escape_javascript(render('layouts/user_requests')) %>");
-$("#myGames").html("<%= escape_javascript(render('games/my_games_table')) %>");
-$("#bids").html("<%= escape_javascript(render('games/bids_table')) %>");
+$("#myGames").html("<%= escape_javascript(render('games/shared/my_games_table')) %>");
+$("#bids").html("<%= escape_javascript(render('games/shared/bid_games_table')) %>");
 <% if flash[:notice] %>
   $("#notice").html("<%= escape_javascript(flash[:notice]) %>");  
 <% end %>

@@ -28,7 +28,7 @@
           Ouuch!! We have send email to administration, take a while
         <% end %>
         <% next if game.status == "bid" %>
-        <%= make_visible(game.id) %>
+        <%= create_visible_switcher(game.id) %>
       </div>
     <% end %>
 <% end %>

@@ -11,8 +11,9 @@ module GamesHelper
     return html
   end
 
-  def make_visible(id)
+  def create_visible_switcher(id)
     game_tmp = Game.find(id)
+    return "" if game_tmp and game_tmp.visible_change?(current_user.id)
     if game_tmp.from == current_user.id
       if game_tmp.visFrom == 'yes'
         html = link_to "Unvisible", visible_game_path(id,"no"), :remote => true
@@ -31,8 +32,9 @@ module GamesHelper
 
   def make_actions(user_id, game_id)
     html = link_to "Request a game", request_game_path(user_id), :remote => true
-    html += link_to "Close", close_game_path(game_id), :method => "delete", :remote => true 
-
+    if user_id == current_user.id
+      html += link_to "Close", close_game_path(game_id), :method => "delete", :remote => true 
+    end
     return html 
   end
 end
