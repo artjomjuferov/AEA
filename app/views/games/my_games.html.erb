@@ -1,1 +1,9 @@
-<%= render 'games/bids_table' %>
+<% @games.each do |game| %>
+  <div id="game<%= game.id %>">
+    <%= User.where(id: game.from).first.email %>
+    <%= User.where(id: game.to).first.email %>
+    <%= game.status %>
+    <%= game.money %>
+    <%= make_visible(game.id) %>
+  </div>
+<% end %>

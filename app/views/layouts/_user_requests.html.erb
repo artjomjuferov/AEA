@@ -11,7 +11,7 @@
             <%= make_yes_no(game.to, "result") %>
           <% end %> 
         <% else %>
-          <% #next if game.visTo == "no" %>
+          <% next if game.visTo == "no" %>
           <% if game.status == "request" %>
             Request from <%= game.from %>
             <%= make_yes_no(game.from, "answer") %>

@@ -15,7 +15,7 @@ class GamesController < ApplicationController
   end
 
   def my_games
-    @games = Game.all_games(params[:id])
+    @games = Game.all_games(current_user.id)
   end
 
   # why doesn't publish here is the question
