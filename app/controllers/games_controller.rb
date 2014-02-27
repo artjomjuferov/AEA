@@ -77,7 +77,6 @@ class GamesController < ApplicationController
     des = params[:des]
     game = Game.find(params[:id])
     game.from == my_id ? id = game.to : id = game.from
-    p my_id,id
     if des == "yes"
       game.update(status: "action") 
       p game.errors

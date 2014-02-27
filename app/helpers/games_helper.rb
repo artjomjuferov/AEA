@@ -37,7 +37,7 @@ module GamesHelper
       html = link_to "Request a game", request_bid_game_path(user_id, money), :class => "requestGameLink", :remote => true
     elsif path == nil
       html = link_to "Request a game", request_game_path(user_id, money), :class => "requestGameLink", :remote => true
-      html += text_field_tag 'Money', 1 
+      html += text_field_tag "requestGameInput#{user_id}", 1 , :class => "requestGameInput" 
     end
     html.html_safe if html
   end

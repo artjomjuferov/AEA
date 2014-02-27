@@ -153,7 +153,7 @@ class Game < ActiveRecord::Base
       ).where(
           t[:status].eq('request')
       ).first
-      errors.add(:from, "have this request") if result and self.status != "action"
+      errors.add(:from, "have this request") if result and self.status != "action" and self.status != "closed"
     end
 
     def exist_bid 

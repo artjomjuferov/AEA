@@ -3,6 +3,15 @@ if (window.currentUser)
   PrivatePub.subscribe("/request/"+window.currentUser.id, function(data, channel) {
     $("#requestGames").load("/games/show_all");
   });
+
+
+  // doesn't work look at it
+  $("a.requestGameLink").click(function (e){
+    alert(e);
+    var oldHref = e.attr("href");
+    value = e.parrent().find(".requestGameInput").val();
+    alert(value);
+  });
 }
 
 /*
