@@ -4,7 +4,7 @@ class Game < ActiveRecord::Base
   validates :from, :money, :status, presence: true
   validates :money, numericality: { greater_than: 0 }
 
-  validate :duplicate, :exist_bid, :buzy_to, :exist_request, :from_eq_to, :buzy_from  
+  validate :exist_bid, :buzy_to, :exist_request, :from_eq_to, :buzy_from  
   validate :correct_result
 
   def self.get_bid_game(id, money)
@@ -101,6 +101,15 @@ class Game < ActiveRecord::Base
     return true
   end
 
+  def visible?(id)
+    if self.from == id 
+      return false if self.visFrom == "no"
+    else 
+      return false if self.visFrom == "no"
+    end
+    return true
+  end
+
 
   private
     
@@ -113,12 +122,7 @@ class Game < ActiveRecord::Base
     end
 
     def from_eq_to
-      errors.add(:from, "invsite yourself") if self.to == self.from
-    end
-
-    def duplicate
-      # p self.status_was,"sd",self.status
-      errors.add(:from, "already exist") if self.status_was == self.status and self.status == "request"
+      errors.add(:error, "invite yourself") if self.to == self.from
     end
 
     def buzy_from
@@ -129,7 +133,7 @@ class Game < ActiveRecord::Base
       ).where(
           t[:status].eq('action')
       ).first
-      errors.add(:from, "already have game") if result and self.won == 0
+      errors.add(:error, "you are buzy") if result and result.won == 0
     end
 
     def buzy_to
@@ -140,7 +144,7 @@ class Game < ActiveRecord::Base
       ).where(
           t[:status].eq('action')
       ).first
-      errors.add(:to, "is buzy") if result and self.won == 0
+      errors.add(:error, "he is buzy") if result and result.won == 0
     end
 
     def exist_request 
@@ -153,7 +157,7 @@ class Game < ActiveRecord::Base
       ).where(
           t[:status].eq('request')
       ).first
-      errors.add(:from, "have this request") if result and self.status != "action" and self.status != "closed"
+      errors.add(:error, "have this request") if result and self.status == "request" and self.visFrom_was == self.visFrom and self.visTo_was == self.visTo 
     end
 
     def exist_bid 

@@ -22,7 +22,7 @@ class GamesController < ApplicationController
       game.save
       flash.now[:notice] = "Sucsesfully created bid #{money}"
     else
-      flash.now[:notice] = game.errors.get(:from).pop
+      flash.now[:notice] = game.errors.get(:error).pop
     end
     render "games/request_games"
   end
@@ -46,7 +46,7 @@ class GamesController < ApplicationController
       PrivatePub.publish_to "/request/#{id}", id: my_id
     else  
       p game.errors
-      # flash.now[:notice] = game.errors.get(:from).pop 
+      flash.now[:notice] = game.errors.get(:error).pop 
     end
     render "games/request_games"
   end
@@ -59,7 +59,7 @@ class GamesController < ApplicationController
     if game
       game.update(from: my_id, to: id, status: "request", money: money)
       if !game.valid? 
-        flash.now[:notice] = game.errors.get(:from).first 
+        flash.now[:notice] = game.errors.get(:error).first 
       else  
         flash.now[:notice] = "Made request game to player #{id} with #{money} $"
         PrivatePub.publish_to "/request/#{id}", id: my_id
@@ -79,7 +79,6 @@ class GamesController < ApplicationController
     game.from == my_id ? id = game.to : id = game.from
     if des == "yes"
       game.update(status: "action") 
-      p game.errors
       if !game.valid?
         flash.now[:notice] = game.errors.get(:from).first 
       end 
@@ -99,7 +98,7 @@ class GamesController < ApplicationController
     des = params[:des]
     game = Game.find(params[:id])
     game.from == my_id ? id = game.to : id = game.from
-    p my_id,id
+    # p my_id,id
     if des == "yes"
       game.update(won: id, first: my_id)  
     else
@@ -107,7 +106,7 @@ class GamesController < ApplicationController
     end  
     if !game.valid?
       p game.errors
-      # flash.now[:notice] = game.errors.get(:to).first 
+      flash.now[:notice] = game.errors.get(:error).first 
     end
     PrivatePub.publish_to "/request/#{id}", id: my_id
     render "games/request_games"
@@ -116,6 +115,8 @@ class GamesController < ApplicationController
 
   def close
     game =  Game.find(params[:id])
+    my_id = current_user
+    game.from == my_id ? id = game.to : id = game.from
     if can_be_closed?(game, current_user.id) and game.destroy
       flash.now[:notice] = "Sucsesfully closed bid #{params[:id]}"
       PrivatePub.publish_to "/request/#{id}", id: my_id
@@ -123,19 +124,20 @@ class GamesController < ApplicationController
       flash.now[:notice] = "Can't closed #{params[:id]}"
     end
     @games = Game.where(status: "bid").all
-    render "games/edit"
+    render "games/request_games"
   end
 
   def visible 
     game = Game.find(params[:id])
     des = params[:des]
-    games = Game.all_games(current_user.id)
     if game.from == current_user.id
       game.update(visFrom: des)
+      p game.errors.messages
     else
+      p game.errors.messages
       game.update(visTo: des)
     end
-    render "games/edit"
+    render "games/request_games"
   end
 
 

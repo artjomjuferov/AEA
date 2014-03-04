@@ -1,13 +1,14 @@
 <% if user_signed_in? %>
     <% Game.all_games(current_user.id).each do |game| %>      
-      <%= game.id %>
-      <div id="game<%= game.to %>">
-        <% if game.from == current_user.id %>
-          <%= create_active_game_from game %>
-        <% else %>
-          <%= create_active_game_to game %>
-        <% end %>
-        <%= create_active_same game %>
-      </div>
+      <% if game.visible?(current_user.id) %>
+        <div id="game<%= game.to %>">
+          <% if game.from == current_user.id %>
+            <%= create_active_game_from game %>
+          <% else %>
+            <%= create_active_game_to game %>
+          <% end %>
+          <%= create_active_same game %>
+        </div>
+      <% end %>
     <% end %>
 <% end %>
