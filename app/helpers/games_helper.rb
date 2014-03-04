@@ -81,7 +81,7 @@ module GamesHelper
       html = "Ouuch!! We have send email to administration, take a while"
     end
     html += create_visible_switcher game
-    html.html_safe if html
+    html.html_safe
   end
 
 end
