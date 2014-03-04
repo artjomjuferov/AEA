@@ -92,11 +92,11 @@ class Game < ActiveRecord::Base
   end
 
   def visible_change?(id)
-    return true if self.status != "bid" and self.status != "ok" and self.status != "trouble"
+    return true if self.status == "action" or self.status == "request"
     if self.from == id 
-      return false if self.visFrom == "No"
+      return false if self.visFrom == "no"
     else
-      return false if self.visTo == "No"
+      return false if self.visTo == "no"
     end
     return true
   end
@@ -168,7 +168,7 @@ class Game < ActiveRecord::Base
           and(t[:money].eq(self.money)).
           and(t[:status].eq('bid'))
       ).first
-      errors.add(:from, "have this bid") if result
+      errors.add(:from, "have this bid") if result and self.status == "bid" and self.visFrom_was == self.visFrom 
     end
 
     def correct_result

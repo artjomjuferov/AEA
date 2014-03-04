@@ -98,7 +98,6 @@ class GamesController < ApplicationController
     des = params[:des]
     game = Game.find(params[:id])
     game.from == my_id ? id = game.to : id = game.from
-    # p my_id,id
     if des == "yes"
       game.update(won: id, first: my_id)  
     else
@@ -131,11 +130,9 @@ class GamesController < ApplicationController
     game = Game.find(params[:id])
     des = params[:des]
     if game.from == current_user.id
-      p "here"
       game.update(visFrom: des)
       p game.errors
     else
-      p "here@#f"
       game.update(visTo: des)
       p game.errors
     end

@@ -72,16 +72,17 @@ module GamesHelper
 
 
   def create_active_same(game)
-    html = ""
     if game.status == "ok"
       html = "Have a good day! Won #{game.won}"
     elsif game.status == "action" and game.first == current_user.id
       html = "Waiting for your compititor results"
     elsif game.status == "trouble" 
       html = "Ouuch!! We have send email to administration, take a while"
+    elsif game.status == "bid"
+      html = "You have created bid #{game.money}"
     end
-    html += create_visible_switcher game
-    html.html_safe
+    html += create_visible_switcher game if html
+    html.html_safe if html
   end
 
 end
