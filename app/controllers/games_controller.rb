@@ -45,7 +45,7 @@ class GamesController < ApplicationController
       flash.now[:notice] = "Made request game to player #{id} with #{money} $"
       PrivatePub.publish_to "/request/#{id}", id: my_id
     else  
-      p game.errors
+      # p game.errors
       flash.now[:notice] = game.errors.get(:error).pop 
     end
     render "games/request_games"
@@ -104,7 +104,7 @@ class GamesController < ApplicationController
       game.update(won: my_id, first: my_id) 
     end  
     if !game.valid?
-      p game.errors
+      # p game.errors
       flash.now[:notice] = game.errors.get(:error).first 
     end
     PrivatePub.publish_to "/request/#{id}", id: my_id
@@ -116,7 +116,8 @@ class GamesController < ApplicationController
     game =  Game.find(params[:id])
     my_id = current_user
     game.from == my_id ? id = game.to : id = game.from
-    if can_be_closed?(game, current_user.id) and game.destroy
+    game.update(status: "closed")
+    if game.valid?
       flash.now[:notice] = "Sucsesfully closed bid #{params[:id]}"
       PrivatePub.publish_to "/request/#{id}", id: my_id
     else
@@ -131,10 +132,10 @@ class GamesController < ApplicationController
     des = params[:des]
     if game.from == current_user.id
       game.update(visFrom: des)
-      p game.errors
+      # p game.errors
     else
       game.update(visTo: des)
-      p game.errors
+      # p game.errors
     end
     render "games/request_games"
   end

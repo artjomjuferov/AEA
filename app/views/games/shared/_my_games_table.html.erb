@@ -12,6 +12,9 @@
       <% if game.visible_change?(current_user.id) %>
         <%= create_visible_switcher(game) %>
       <% end %>
+      <% if game.status == "bid" %>
+        <%= create_close_game(current_user.id, game) %>
+      <% end %>
     </div>
   <% end %>
 <% end %>

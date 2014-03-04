@@ -40,9 +40,9 @@ module GamesHelper
     html.html_safe if html
   end
 
-  def create_close_game(user_id, game_id)
+  def create_close_game(user_id, game)
     if user_id == current_user.id
-      html = link_to "Close", close_game_path(game_id), :method => "delete", :remote => true 
+      html = link_to "Close", close_game_path(game.id), :method => "delete", :remote => true 
     end
     html.html_safe if html
   end
@@ -51,7 +51,7 @@ module GamesHelper
   def create_active_game_from(game)
     if game.status == 'request'
       html = "Waiting for #{game.to} "
-      html += link_to "Close", close_game_path(game.id), :method => "delete", :remote => true
+      html += create_close_game(current_user.id, game)
     elsif game.status == "action" and game.first != current_user.id
       html = "WON #{game.to}"
       html += make_yes_no game, "result" 
@@ -80,6 +80,7 @@ module GamesHelper
       html = "Ouuch!! We have send email to administration, take a while"
     elsif game.status == "bid"
       html = "You have created bid #{game.money}"
+      html += create_close_game(current_user.id, game)
     end
     html += create_visible_switcher game if html
     html.html_safe if html

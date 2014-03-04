@@ -29,7 +29,7 @@
       <ul class="nav navbar-nav navbar-right">  
         <% if user_signed_in? %>
           <li>
-            <%= link_to 'Logged In [click to logout]', destroy_user_session_path, :method => :delete %>
+            <%= link_to "#{current_user.email} [click to logout]", destroy_user_session_path, :method => :delete %>
           </li>
         <% else %>
           <li>

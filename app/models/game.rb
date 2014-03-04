@@ -14,7 +14,6 @@ class Game < ActiveRecord::Base
           and(t[:status].eq('bid')).
           and(t[:money].eq(money))
     ).first
-    p result
     return result      
   end
 
@@ -39,17 +38,6 @@ class Game < ActiveRecord::Base
     )
     return result
   end
-
-  def self.close_game(id1, id2)
-    t = self.arel_table
-    result = self.where(
-          t[:from].eq(id1).
-          and(t[:to].eq(id2)).
-          or t[:from].eq(id2).
-          and(t[:to].eq(id1))
-    ).where(t[:status].eq('request')).first
-    result.destroy if result     
-  end  
 
   def self.make_action(id1, id2)
     t = self.arel_table
@@ -133,7 +121,7 @@ class Game < ActiveRecord::Base
       ).where(
           t[:status].eq('action')
       ).first
-      errors.add(:error, "you are buzy") if result and result.won == 0
+      errors.add(:error, "you are buzy") if result and result.won == 0 and !want_to_change_vis?
     end
 
     def buzy_to
@@ -144,7 +132,7 @@ class Game < ActiveRecord::Base
       ).where(
           t[:status].eq('action')
       ).first
-      errors.add(:error, "he is buzy") if result and result.won == 0
+      errors.add(:error, "he is buzy") if result and result.won == 0 and !want_to_change_vis?
     end
 
     def exist_request 
@@ -157,7 +145,7 @@ class Game < ActiveRecord::Base
       ).where(
           t[:status].eq('request')
       ).first
-      errors.add(:error, "have this request") if result and self.status == "request" and self.visFrom_was == self.visFrom and self.visTo_was == self.visTo 
+      errors.add(:error, "have this request") if result and self.status == "request" and !want_to_change_vis?
     end
 
     def exist_bid 
@@ -168,7 +156,7 @@ class Game < ActiveRecord::Base
           and(t[:money].eq(self.money)).
           and(t[:status].eq('bid'))
       ).first
-      errors.add(:from, "have this bid") if result and self.status == "bid" and self.visFrom_was == self.visFrom 
+      errors.add(:from, "have this bid") if result and self.status == "bid" and !want_to_change_vis?
     end
 
     def correct_result
@@ -176,6 +164,12 @@ class Game < ActiveRecord::Base
         self.status = "trouble"
       end
       self.status = "ok" if self.won_was == self.won and self.won != 0
+    end
+
+
+    def want_to_change_vis
+      true if self.visFrom_was != self.visFrom or self.visTo_was != self.visTo
+      false 
     end
 
 end
