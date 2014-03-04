@@ -9,7 +9,9 @@
       <% end %>
       <%= game.status %>
       <%= game.money %>
-      <%= create_visible_switcher(game) %>
+      <% if game.visible_change?(current_user.id) %>
+        <%= create_visible_switcher(game) %>
+      <% end %>
     </div>
   <% end %>
 <% end %>

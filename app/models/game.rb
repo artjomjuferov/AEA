@@ -105,7 +105,7 @@ class Game < ActiveRecord::Base
     if self.from == id 
       return false if self.visFrom == "no"
     else 
-      return false if self.visFrom == "no"
+      return false if self.visTo == "no"
     end
     return true
   end

@@ -1,5 +1,5 @@
 <% if user_signed_in? %>
-    <% Game.all_games(current_user.id).each do |game| %>      
+    <% Game.all_games(current_user.id).each do |game| %>   
       <% if game.visible?(current_user.id) %>
         <div id="game<%= game.to %>">
           <% if game.from == current_user.id %>

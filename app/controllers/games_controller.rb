@@ -131,11 +131,13 @@ class GamesController < ApplicationController
     game = Game.find(params[:id])
     des = params[:des]
     if game.from == current_user.id
+      p "here"
       game.update(visFrom: des)
-      p game.errors.messages
+      p game.errors
     else
-      p game.errors.messages
+      p "here@#f"
       game.update(visTo: des)
+      p game.errors
     end
     render "games/request_games"
   end

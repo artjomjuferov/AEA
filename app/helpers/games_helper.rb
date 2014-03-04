@@ -12,7 +12,6 @@ module GamesHelper
   end
 
   def create_visible_switcher(game)
-    return "" if game and !game.visible_change?(current_user.id)
     if game.from == current_user.id
       if game.visFrom == 'yes'
         html = link_to "Unvisible", visible_game_path(game.id,"no"), :remote => true
@@ -81,7 +80,7 @@ module GamesHelper
     elsif game.status == "trouble" 
       html = "Ouuch!! We have send email to administration, take a while"
     end
-    html += create_visible_switcher game if game.visible?(current_user.id)
+    html += create_visible_switcher game
     html.html_safe if html
   end
 
