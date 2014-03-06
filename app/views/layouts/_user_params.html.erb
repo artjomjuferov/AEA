@@ -1,9 +1,0 @@
-<% if user_signed_in? %>
-  <div id="gamesReguest"></div>
-  <script type="text/javascript">
-      window.currentUser = {
-          id : "<%= current_user.id %>"
-      }
-  </script>
-  <%= subscribe_to "/request/#{current_user.id}" %>    
-<% end %>
